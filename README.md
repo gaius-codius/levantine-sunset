@@ -2,8 +2,8 @@
 
 Four Omarchy themes: two places, each at two depths.
 
-**Batroun** is the coast — the Phoenician sea wall, sun going down over the water.
-**Beirut** is the city after dark — warm lamplight on stone. Each comes in a soft
+**Batroun** is the coast; the Phoenician sea wall, sun going down over the water.
+**Beirut** is the city after dark; warm lamplight on stone. Each comes in a soft
 indigo depth and a near-black *Noir*.
 
 Omarchy installs one theme per repository, so each of the four has its own; this
