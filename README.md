@@ -39,6 +39,12 @@ chroma only, hue and lightness held, so syntax highlighting keeps its relationsh
 Four per theme, generated procedurally from each theme's own hex values — no source
 photographs. `SEED` varies them per theme, so no two draw the same frame.
 
+![All sixteen wallpapers](previews/wallpaper-matrix.jpg)
+
+Rows are the four archetypes, in the order of the table below. Columns are the
+four themes: hue separates the Batroun pair from the Beirut pair, depth separates
+each theme from its Noir.
+
 | file | | luminance (soft / noir) |
 |---|---|---|
 | `1-colonnade` | pointed arches cut from a dark wall, evening beyond | 40–45 / 32–38 |
