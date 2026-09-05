@@ -55,6 +55,27 @@ each theme from its Noir.
 The arcade in `1-colonnade` is the same one on the Plymouth boot mark — pointed rather
 than Roman, each arch two arcs of radius 1.5× the half-span so they meet at a point.
 
+## Boot and login screen
+
+![The four boot marks](previews/boot-marks.jpg)
+
+Each theme ships an `unlock.png` — the boot **logo mark**, the same pointed arcade as
+`1-colonnade`, drawn in that theme's own accents on its own background. Omarchy uses it
+for both the Plymouth boot splash and the SDDM login screen, which it styles together.
+
+Applying it is a **separate, one-time, root operation**. `omarchy theme set` does not
+touch either screen, so installing a theme leaves whatever greeter you already had:
+
+```sh
+omarchy plymouth set by theme batroun        # or batroun-noir, beirut, beirut-noir
+omarchy plymouth current                     # what is applied now
+omarchy plymouth reset                       # back to the stock Omarchy screen
+```
+
+The argument is the directory slug, as printed by `omarchy plymouth list` — not the
+display name. It needs root and rebuilds the initramfs, so give it a minute. Each theme
+repo shows its own composed 1920x1080 render.
+
 ## Building
 
 `build-pack.sh` regenerates all four themes and every wallpaper into
