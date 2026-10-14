@@ -34,6 +34,33 @@ Beirut's leans plum and pushes both toward grey, so nothing competes with the am
 the screen reads as lit by one lamp. The cool keys are scaled ×1.25 and ×0.68 in Lab —
 chroma only, hue and lightness held, so syntax highlighting keeps its relationships.
 
+## Terminals
+
+Omarchy's terminal templates use `muted` as bright black, which is the colour most
+shells and editors draw comments in. Here that is 1.4–1.6:1 on the ground, because
+`muted` is also the border and hover colour and has to stay faint for those. So
+each theme ships its own `ghostty.conf`, `kitty.conf`, `alacritty.toml` and
+`foot.ini`, which Omarchy uses instead of the templates:
+
+| | bright black | on its ground |
+|---|---|---|
+| Batroun / Batroun Noir | `#84798E` | 4.5 / 4.8 |
+| Beirut / Beirut Noir | `#847A8F` | 4.6 / 4.9 |
+
+That is `dark_foreground` lifted in Lab to 4.5:1 on the soft ground, with hue and
+chroma held, and the same value at both depths. Bold text uses the bright palette,
+selected text stays in the foreground colour, and the cursor is the accent.
+Everything that isn't a colour is copied from Omarchy's templates, so when those
+change, `make_terms` in `build-pack.sh` has to follow by hand.
+
+Each `ghostty.conf` is also a plain Ghostty theme, for Ghostty outside Omarchy:
+
+```sh
+mkdir -p ~/.config/ghostty/themes
+curl -fsSL https://raw.githubusercontent.com/gaius-codius/omarchy-beirut-noir-theme/main/ghostty.conf \
+  -o ~/.config/ghostty/themes/beirut-noir      # then: theme = beirut-noir
+```
+
 ## Wallpapers
 
 Four per theme, generated procedurally from each theme's own hex values — no source
@@ -111,7 +138,7 @@ stock ones included — which is why it isn't in this repo:
     ~/.config/gtk-4.0/gtk.css -> ~/.local/state/omarchy/current/theme/gtk.css
 
 `omarchy-theme-set-templates` globs `~/.config/omarchy/themed/*.tpl`, so adding a
-template makes every theme generate a `gtk.css` alongside its `ghostty.conf`; the
+template makes every theme generate a `gtk.css` alongside its `btop.theme`; the
 symlink points GTK at whichever theme is active. GTK reads its CSS at startup, so
 restart an app to see a change (`nautilus -q`, then reopen). The template is in the
 [collection repo](https://github.com/gaius-codius/levantine-sunset).
