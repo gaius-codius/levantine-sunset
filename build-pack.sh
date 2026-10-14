@@ -14,6 +14,7 @@ p_batroun() {
   cyan="#5CB6A8"; blue="#6F93E0"; magenta="#D98BA6"; brown="#6E4A3C"
   b_red="#F08A5F"; b_yellow="#F3C273"; b_green="#BAC57C"
   b_cyan="#71C9BB"; b_blue="#89A9EE"; b_magenta="#E8A0B9"
+  b_black="#84798E"
   fg="#EDE3D6"; dark_fg="#6E6478"; light_fg="#C9BFB4"; bright_fg="#FFF8EE"
   border="rgba(e4744aee) rgba(e8b25cee) 45deg"
   burn="#6A3A4E"; glow="#C25F45"; lip="#EFAE66"; emberglow="#7A3A2E"
@@ -25,6 +26,7 @@ p_beirut() {
   cyan="#88ADA2"; blue="#92A0B9"; magenta="#CD87A2"; brown="#6B4A30"
   b_red="#E88A63"; b_yellow="#F2B855"; b_green="#B5C077"
   b_cyan="#9CBFB4"; b_blue="#A5B3CA"; b_magenta="#DC9BB4"
+  b_black="#847A8F"
   fg="#F0E5D3"; dark_fg="#6D6478"; light_fg="#CBBFAB"; bright_fg="#FFF8EA"
   border="rgba(e8a63fee) rgba(d9744eee) 45deg"
   burn="#7A4530"; glow="#D2833A"; lip="#F2CB86"; emberglow="#6E4520"
@@ -241,6 +243,162 @@ bright_magenta = "$b_magenta"
 TOML
 }
 
+# ------------------------------------------------------------- terminals ----
+# Omarchy's terminal templates use `muted` for bright black, the colour most
+# shells and editors draw comments in. Here that is 1.4-1.6:1 on the ground --
+# muted is a border and hover colour, and has to stay faint for those. A theme
+# that ships its own config wins over the template, so the four terminals get
+# their own, with a bright black of their own: dark_fg lifted in Lab to 4.5:1
+# on the soft ground (hue and chroma held), and the same value at both depths.
+# Everything that isn't a colour is copied from Omarchy's templates.
+make_terms() { # dir
+  local d=$1 s=${bg#\#}
+  cat > "$d/ghostty.conf" <<CONF
+background = $bg
+foreground = $fg
+cursor-color = $accent
+cursor-text = $bg
+selection-background = $sel
+selection-foreground = $fg
+bold-color = bright
+
+palette = 0=$muted
+palette = 1=$red
+palette = 2=$green
+palette = 3=$yellow
+palette = 4=$blue
+palette = 5=$magenta
+palette = 6=$cyan
+palette = 7=$light_fg
+palette = 8=$b_black
+palette = 9=$b_red
+palette = 10=$b_green
+palette = 11=$b_yellow
+palette = 12=$b_blue
+palette = 13=$b_magenta
+palette = 14=$b_cyan
+palette = 15=$bright_fg
+CONF
+  cat > "$d/kitty.conf" <<CONF
+foreground $fg
+background $bg
+selection_foreground $fg
+selection_background $sel
+
+cursor $accent
+cursor_text_color $bg
+
+# Lets a reload change the background opacity, as Glassy windows do, since
+# kitty only allows that when this is on from launch.
+dynamic_background_opacity yes
+
+active_border_color $accent
+active_tab_background $accent
+
+color0 $muted
+color1 $red
+color2 $green
+color3 $yellow
+color4 $blue
+color5 $magenta
+color6 $cyan
+color7 $light_fg
+color8 $b_black
+color9 $b_red
+color10 $b_green
+color11 $b_yellow
+color12 $b_blue
+color13 $b_magenta
+color14 $b_cyan
+color15 $bright_fg
+CONF
+  cat > "$d/alacritty.toml" <<CONF
+[colors]
+draw_bold_text_with_bright_colors = true
+
+[colors.primary]
+background = "$bg"
+foreground = "$fg"
+
+[colors.cursor]
+text = "$bg"
+cursor = "$accent"
+
+[colors.vi_mode_cursor]
+text = "$bg"
+cursor = "$accent"
+
+[colors.search.matches]
+foreground = "$bg"
+background = "$yellow"
+
+[colors.search.focused_match]
+foreground = "$bg"
+background = "$red"
+
+[colors.footer_bar]
+foreground = "$bg"
+background = "$fg"
+
+[colors.selection]
+text = "$fg"
+background = "$sel"
+
+[colors.normal]
+black = "$muted"
+red = "$red"
+green = "$green"
+yellow = "$yellow"
+blue = "$blue"
+magenta = "$magenta"
+cyan = "$cyan"
+white = "$light_fg"
+
+[colors.bright]
+black = "$b_black"
+red = "$b_red"
+green = "$b_green"
+yellow = "$b_yellow"
+blue = "$b_blue"
+magenta = "$b_magenta"
+cyan = "$b_cyan"
+white = "$bright_fg"
+CONF
+  cat > "$d/foot.ini" <<CONF
+[main]
+bold-text-in-bright=palette-based
+
+[colors-dark]
+foreground=${fg#\#}
+background=$s
+# Blur only applies while the background is see-through, as with Glassy windows,
+# and foot reads it only at launch, so it is on from the start.
+blur=yes
+selection-foreground=${fg#\#}
+selection-background=${sel#\#}
+
+cursor=$s ${accent#\#}
+
+regular0=${muted#\#}
+regular1=${red#\#}
+regular2=${green#\#}
+regular3=${yellow#\#}
+regular4=${blue#\#}
+regular5=${magenta#\#}
+regular6=${cyan#\#}
+regular7=${light_fg#\#}
+
+bright0=${b_black#\#}
+bright1=${b_red#\#}
+bright2=${b_green#\#}
+bright3=${b_yellow#\#}
+bright4=${b_blue#\#}
+bright5=${b_magenta#\#}
+bright6=${b_cyan#\#}
+bright7=${bright_fg#\#}
+CONF
+}
+
 # ---------------------------------------------------------------- preview ----
 make_preview() { # dir title
   local d=$1 sw=$(( 1200 / 8 ))
@@ -271,6 +429,7 @@ for PAL in batroun beirut; do
     # omarchy-theme-set-gnome reads this and sets gsettings icon-theme;
     # without it every theme falls back to Yaru-blue.
     printf '%s\n' "$icons" > "$dir/icons.theme"
+    make_terms "$dir"
     [[ ${ASSETS_ONLY:-0} == 1 ]] || make_walls "$dir/backgrounds"
     unlock_mark "$dir/unlock.png"
     # Generated with Omarchy's own tool so it matches the stock convention
